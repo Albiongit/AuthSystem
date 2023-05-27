@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System.Text.RegularExpressions;
+using AuthSystem.Models;
 
 namespace AuthSystem.Areas.Identity.Pages.Account
 {
@@ -86,7 +88,7 @@ namespace AuthSystem.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [EmailAddress]
+            //[EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
@@ -135,6 +137,14 @@ namespace AuthSystem.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+                //Email validation
+                if(!IsValidEmail(Input.Email))
+                {
+                    ModelState.AddModelError("Input.Email", "Invalid email address.");
+                    return Page();
+                }
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
@@ -171,6 +181,35 @@ namespace AuthSystem.Areas.Identity.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
+        }
+
+        public static bool IsValidEmail(string email)
+        {
+            //string pattern = @"^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$";
+
+            string pattern = @"^([a-zA-Z0-9]+[_\.\-]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[\.\-]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$";
+            //string pattern = @"^[a-zA-Z0-9]+[._-]?[a-zA-Z0-9]*@[a-zA-Z0-9]+[.-]?[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$";
+
+            //try
+            //{
+            //    // Set a low timeout value to trigger the timeout mechanism
+            //    TimeSpan timeout = TimeSpan.FromSeconds(1);
+
+            //    // Attempt to match the regular expression against the input
+            //    var match = Regex.Match(email, pattern, RegexOptions.None, timeout);
+
+            //    Console.WriteLine("Match found: " + match.Success);
+
+            //    return true;
+            //}
+            //catch (RegexMatchTimeoutException ex)
+            //{
+            //    Console.WriteLine("Error: " + ex.Message);
+            //}
+
+            //return false;
+            Regex regex = new Regex(pattern);
+            return regex.IsMatch(email);
         }
 
         private ApplicationUser CreateUser()
