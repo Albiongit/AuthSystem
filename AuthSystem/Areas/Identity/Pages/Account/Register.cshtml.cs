@@ -185,10 +185,7 @@ namespace AuthSystem.Areas.Identity.Pages.Account
 
         public static bool IsValidEmail(string email)
         {
-            //string pattern = @"^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$";
-
             string pattern = @"^([a-zA-Z0-9]+[_\.\-]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[\.\-]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$";
-            //string pattern = @"^[a-zA-Z0-9]+[._-]?[a-zA-Z0-9]*@[a-zA-Z0-9]+[.-]?[a-zA-Z0-9]+\.[a-zA-Z]{2,4}$";
 
             //try
             //{
